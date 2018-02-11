@@ -1,9 +1,18 @@
-import numpy as np
 import pandas as pd
+import numpy as np
+
+
+class BadRecord(Exception):
+    pass
+
 
 class Record(object):
 
     def __init__(self, rec_str):
+        """
+        Create a new record.
+        :param rec_str: record string from streaming data
+        """
 
         self.CMTE_ID = None
         self.NAME = None
@@ -14,107 +23,53 @@ class Record(object):
 
         self.ID = None   # Record ID, we will construct this
         
-        self._acceptable_cmtid = False
-        self._acceptable_name = False
-        self._acceptable_zip = False
-        self._acceptable_date = False
-        self._acceptable_amt = False
-        self._acceptable = None
-
         self.__parse_record(rec_str)
 
     def __parse_record(self, rec_str):
         """
-        Parses a record
-
-        Args:
-            rec (str) : record from streaming data
-        Returns:
-            Pandas
+        Parses a record string.
+        
+        :param rec_str: record from streaming data
+        :return: None
         """
         tokenized = rec_str.strip().split("|")
 
-        self._acceptable = True
-        
         try:
             self.CMTE_ID = tokenized[0]
-            self._acceptable_cmtid = True
-        except:
-            pass
-        
-        try:
             self.NAME = tokenized[7]
-            self._acceptable_name = True
-        except:
-            pass
-
-        try:
             self.ZIP_CODE = tokenized[10][:5]
-            self._acceptable_zip = True
-        except:
-            self.ZIP_CODE = ''
-
-        try:
             self.TRANSACTION_DT = pd.to_datetime(tokenized[13], format='%m%d%Y', errors='raise')
-            self._acceptable_date = True
-        except:
-            pass
-
-        try:
-            self.TRANSACTION_AMT = float(tokenized[14])
-            self._acceptable_amt = True
-        except:
-            pass
-
-        try:
+            self.TRANSACTION_AMT = np.round(float(tokenized[14]))
             self.OTHER_ID = tokenized[15]
-        except:
-            self._acceptable = False
+        except (IndexError, ValueError):
+            raise BadRecord
         
-        self._acceptable = self._acceptable and self._acceptable_cmtid and self._acceptable_name and \
-                           self._acceptable_zip and self._acceptable_date and self._acceptable_amt
+        self.__check_acceptable()
         
-        if self._acceptable:
-            self.ID = self.NAME + self.ZIP_CODE
+        self.ID = self.NAME + self.ZIP_CODE
 
-    def is_acceptable(self):
+    def __check_acceptable(self):
         """
         Checks if the record is acceptable according to rules of acceptability.
 
-        Returns:
-            True if record is sane, False otherwise
+        :return: None
         """
-        
-        # If already something went wrong while parsing, then no need to check any
-        # other further criteria
-        if not self._acceptable:
-            return self._acceptable
         
         # No name, bad data
         if not self.NAME:
-            self._acceptable = False
+            raise BadRecord
+        
+        # Name is a numeric value
+        if self.NAME.isdigit():
+            raise BadRecord
 
         # Ignore, because this means contribution not from individual
         if self.OTHER_ID:
-            self._acceptable = False
+            raise BadRecord
 
         # Bad zip code
         if len(self.ZIP_CODE) < 5:
-            self._acceptable = False
-
-        if not self.TRANSACTION_AMT:
-            self._acceptable = False
+            raise BadRecord
 
         if not self.CMTE_ID:
-            self._acceptable = False
-
-        # The transaction data was not parsable
-        # if pd.isnull(self.TRANSACTION_DT):
-        #     self._acceptable = False
-
-        return self._acceptable
-
-
-
-
-
+            raise BadRecord
