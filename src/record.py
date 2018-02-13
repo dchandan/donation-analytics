@@ -62,6 +62,10 @@ class Record(object):
         # Name is a numeric value
         if self.NAME.isdigit():
             raise BadRecord
+        
+        # donation amount has to be greater than zero
+        if self.TRANSACTION_AMT <= 0:
+            raise BadRecord
 
         # Ignore, because this means contribution not from individual
         if self.OTHER_ID:

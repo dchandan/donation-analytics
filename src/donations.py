@@ -58,9 +58,17 @@ class Donations(object):
         """
         
         # compute the "ordinal rank" first
-        n = int(np.round((perc/100) * self.num_donations()))
+        n = int(np.ceil((perc/100) * self.num_donations())) - 1
         # return data at that ordinal rank
         return self._donations[n]
+    
+    def __eq__(self, other):
+        """
+        Equality comparison operator.
+        :param other: another object of class Donations
+        :return: True if both objects have the same donations
+        """
+        return self._donations == other._donations
     
 
 class RepeatDonations(object):

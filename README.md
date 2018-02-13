@@ -1,4 +1,4 @@
-## Approach
+# Approach
 
 The solution to the challenge is provided using a number of classes contained in several python files.
 These classes are summarized in the table below.
@@ -60,37 +60,45 @@ to any recipient listed in the `itcont.txt` file in any prior calendar year".
 The task of this class is to maintain a data structure of repeat donations. To be efficient, this
 class also stores data in a **tree structure**.
 
+![Donors tree structure](https://github.com/dchandan/donation-analytics/blob/master/Resources/RepeatDonations.png)
+
+### The `Donations` class
+The purpose of this class is to simply store a (growing) list of donations (the class doesn't care really
+about what these donations mean) and compute the percentile on those values.
+
 ### The `AnalyticsApp` class
 
-This is "the application". It is adapted to streaming use. For any given string-record, e.g.
+This is "the application". It is adapted to streaming use.
 
-```python
-record_string = "C00629618|N|TER|P|201701230300133512|15C|IND|PEREZ, JOHN A|LOS ANGELES|CA|90017|PRINCIPAL|DOUBLE NICKEL ADVISORS|01032017|40|H6CA34245|SA01251735122|1141239|||2012520171368850783"
-```
-
-regardless of whether it is read from file or from a streaming API, one simply has to do
-
-```python
-app.update(record_string)
-```
-
-This function
-1. Creates a record object from the string
-2. Checks if the donor in the record is a repeat donor
-3. Prints the analysis to the output file
-4. Finally enters the new record into its internal database
-
-## Dependencies
-
-This program only depends on two libraries not in the Python standard library: `numpy` and `pytest`
-(for testing only).
-
-
-## Instructions
-
-The usage of the app is very simple:
+The general usage of the app is very simple:
 
 1. Instantiate the `app` as `AnalyticsApp(output_filename, percentile_value)`.
 2. For any new string-record, simply update the app as `app.update(record_string)`. This one step does everything as described above.
 3. At the end of the app call `app.finalize()`.
 
+
+For any given string-record, e.g.
+
+```python
+record_string = "C00629618|N|TER|P|201701230300133512|15C|IND|PEREZ, JOHN A|LOS ANGELES|CA|90017|PRINCIPAL|DOUBLE NICKEL ADVISORS|01032017|40|H6CA34245|SA01251735122|1141239|||2012520171368850783"
+```
+
+the `app.update(record_string)` function:
+1. Creates a record object from the string
+2. Checks if the donor in the record is a repeat donor
+3. Prints the analysis to the output file
+4. Finally enters the new record into its internal database
+
+
+
+# Dependencies
+
+This program only depends on two libraries not in the Python standard library: `numpy` and `pytest`
+(for testing only).
+
+
+# Instructions
+
+Modify the input/output filenames in the `run.sh` script if necessary, then execute the script.
+
+For testing, go to `insight_testsuite/tests` then on the shell run `pytest`.

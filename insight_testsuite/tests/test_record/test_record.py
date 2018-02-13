@@ -67,7 +67,7 @@ def test_parsing_TRANSACTION_DT(record, isGood, date):
 
 @pytest.mark.parametrize("record,isGood,value", [
     ("C00384516|x|x|x|x|x|x|SABOURIN, JOE|x|x|028956146|x|x|01312016|484||x|x||x|x", True, 484),
-    ("C00384516|x|x|x|x|x|x|SABOURIN, JOE|x|x|028956146|x|x|01312016|0.0||x|x||x|x", True, 0),
+    ("C00384516|x|x|x|x|x|x|SABOURIN, JOE|x|x|028956146|x|x|01312016|0.0||x|x||x|x", False, 0),
     ("C00384516|x|x|x|x|x|x|SABOURIN, JOE|x|x|028956146|x|x|01312016|32.1||x|x||x|x", True, 32),
     ("C00384516|x|x|x|x|x|x|SABOURIN, JOE|x|x|028956146|x|x|01312016|32.51||x|x||x|x", True, 33),
     ("C00384516|x|x|x|x|x|x|SABOURIN, JOE|x|x|028956146|x|x|01312016|14245.22||x|x||x|x", True, 14245),
