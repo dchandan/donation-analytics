@@ -48,7 +48,7 @@ class Donors(object):
     def is_repeat_donor(self, rec):
         """
         Checks to see if we have any record of this individual, uniquely identified by
-        zip code and name, previously donating to a specified committee.
+        zip code and name, previously donating to any committee.
 
         :param rec: Object of class Record
         :return: True if repeat donor, False otherwise
@@ -69,7 +69,7 @@ class Donors(object):
         try:
             years_contributed = self._donors[ZIP_CODE][NAME]
             for yr in years_contributed:
-                if yr <= YEAR:
+                if yr < YEAR:
                     repeat_donor = True
                     break
         except KeyError:

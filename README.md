@@ -101,4 +101,6 @@ This program only depends on two libraries not in the Python standard library: `
 
 Modify the input/output filenames in the `run.sh` script if necessary, then execute the script.
 
+** Important **
 For testing, go to `insight_testsuite/tests` then on the shell run `pytest`.
+It is important that you use `pytest` to run the tests or the tests will fail.

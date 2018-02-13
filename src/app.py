@@ -6,13 +6,13 @@ from donations import RepeatDonations
 
 class AnalyticsApp(object):
 
-    def __init__(self, ofname, perc, verbosty=1):
+    def __init__(self, ofname, perc, verbosity=1):
         """
         Constructor
         
         :param ofname: output file name
         :param perc: percentile value (> 0 and <= 100)
-        :param verbosty: how much diagnostics to produce
+        :param verbosity: how much diagnostics to produce
         """
         self._ofname = ofname
         self._perc = perc
@@ -28,16 +28,20 @@ class AnalyticsApp(object):
         # A data structure containing (some) information about all repeat donations
         self._repeats = RepeatDonations()
         
-        if not isinstance(verbosty, int):
+        if not isinstance(verbosity, int):
             raise ValueError("Verbosity must be an integer")
-        self._verbosity = verbosty
+        self._verbosity = verbosity
         
         if self._verbosity >= 1:
             print("Configuration:")
-            print("  Output file: ", ofname)
-            print("  Percentile : ", perc)
+            print("  Output file: ", self._ofname)
+            print("  Percentile : ", self._perc)
+            print("  Verbosity  : ", self._verbosity)
 
         self._ofile = open(self._ofname, "w")
+        
+        # to count how many records processed
+        self._ctr = 0
     
     @property
     def perc(self):
@@ -58,6 +62,8 @@ class AnalyticsApp(object):
         :param recstr: the record in string format
         :return: None
         """
+        self._ctr += 1
+        
         if self._verbosity > 3:
             print(recstr)
         try:
@@ -70,14 +76,17 @@ class AnalyticsApp(object):
             This is a repeat donor.
             """
             if self._verbosity > 1:
-                print("[AnalyticsApp.update] Repeat donor")
+                print("[AnalyticsApp.update] Repeat donor {0:30s} {1:5s} {2:4d}   {3:d}".format(rec.NAME,
+                                                                                                rec.ZIP_CODE,
+                                                                                                rec.TRANSACTION_DT.year,
+                                                                                                self._ctr))
             self._repeats.insert(rec)
             
             self._print(rec)
         else:
             """
-            We have not seen any previous instance of this donor donating to
-            this committee. So, we insert this new information into the donors database.
+            We have not seen any previous instance of this donor donating. So, we insert this
+            new information into the donors database.
             """
             self._all_donors.insert(rec)
 
@@ -104,12 +113,13 @@ class AnalyticsApp(object):
         self._ofile.close()
 
 
-def main(infname, percfile, ofname):
+def main(infname, percfile, ofname, verbosity=1):
     """
     Main program
     :param infname: name of the input file
     :param percfile: name of the percentile file
     :param ofname: name of the output file
+    :param verbosity: how much diagnostics to print
     :return: None
     """
 
@@ -125,7 +135,7 @@ def main(infname, percfile, ofname):
     itcontF = open(infname, "r")
 
     # Create the app
-    App = AnalyticsApp(ofname, perc, 2)
+    App = AnalyticsApp(ofname, perc, verbosity)
 
     # Loop over all values in the stream
     for line in itcontF:
@@ -139,7 +149,8 @@ if __name__ == "__main__":
     parser.add_argument("infname", type=str, help="input itcont filename")
     parser.add_argument("percfile", type=str, help="filename of the percentile file")
     parser.add_argument("ofname", type=str, help="output filename")
+    parser.add_argument("--verbosity", type=int, default=1, help="output filename")
     args = parser.parse_args()
     
-    main(args.infname, args.percfile, args.ofname)
+    main(args.infname, args.percfile, args.ofname, args.verbosity)
 

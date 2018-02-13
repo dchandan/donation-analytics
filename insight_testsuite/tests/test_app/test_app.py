@@ -13,8 +13,8 @@ from app import main, AnalyticsApp
 ])
 def test_app(infile, ofile, checkfile):
     direc = os.path.dirname(__file__)
-    main(os.path.join(direc, infile), os.path.join(direc, "percentile.txt"), os.path.join(direc, ofile))
-    assert(open(os.path.join(direc, ofile), "r").readlines() == open(os.path.join(direc, checkfile), "r").readlines())
+    main(os.path.join(direc, "input", infile), os.path.join(direc, "input", "percentile.txt"), os.path.join(direc, "output", ofile))
+    assert(open(os.path.join(direc, "output", ofile), "r").readlines() == open(os.path.join(direc, "output", checkfile), "r").readlines())
 
 
 def test_invalid_percentile():
