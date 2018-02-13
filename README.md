@@ -32,7 +32,7 @@ I accomplish this using a **tree structure**. Given the formulaiton of our probl
 store three pieces of information from any donation record: the NAME of the donor, the ZIP_CODE
 of the donor and the YEAR of the donation.
 
-The tree data structure makes looking up for repeat donors very fast. The `Donors` class itself is the
+The tree data structure (shown below) makes looking up for repeat donors very fast. The `Donors` class itself is the
 head node and has its children nodes the various ZIP_CODE that we have seen so far (i.e. each
 zipcode will be a node). Each
 ZIP_CODE node itself has its children nodes corresponding to each donor from that zipcode. Finally, this
@@ -47,6 +47,8 @@ compare this new record (in worst case) to all the other records to see if "SABO
 from zip code "02895" has previously donated or not. I simply need to know if the tree structure
 presently has a path: **SABOURIN, JAMES** --> **02895** or not, and if there is such a path, then
 just I check to see if he has contributed in any years prioir to 2017.
+
+[[https://github.com/dchandan/donation-analytics/blob/master/Resources/Donors.pdf]]
 
 Note, we are not useing the committee to which a donation has been made because the problem
 statement says that a donor is a repeat donor if he/she has "previously contributed
