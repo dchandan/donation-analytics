@@ -1,4 +1,8 @@
+!*
 .idea
 output
 input
 insight_testsuite/tests/test_record/.cache
+*.
+*.pyc
+.DS_Store
