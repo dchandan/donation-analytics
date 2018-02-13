@@ -48,7 +48,7 @@ from zip code "02895" has previously donated or not. I simply need to know if th
 presently has a path: **SABOURIN, JAMES** --> **02895** or not, and if there is such a path, then
 just I check to see if he has contributed in any years prioir to 2017.
 
-[[https://github.com/dchandan/donation-analytics/blob/master/Resources/Donors.png]]
+![Donors tree structure](https://github.com/dchandan/donation-analytics/blob/master/Resources/Donors.png)
 
 Note, we are not useing the committee to which a donation has been made because the problem
 statement says that a donor is a repeat donor if he/she has "previously contributed
